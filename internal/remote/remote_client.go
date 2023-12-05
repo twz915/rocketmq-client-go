@@ -192,14 +192,14 @@ func (c *remotingClient) receiveResponse(r *tcpConnWrapper) {
 		}
 
 		err = r.Conn.SetReadDeadline(time.Now().Add(c.config.ReadTimeout))
-		if errors.Is(err, os.ErrDeadlineExceeded) { // timeout, read no data
-			err = nil
-		}
 		if err != nil {
 			continue
 		}
 
 		_, err = io.ReadFull(r, *header)
+		if errors.Is(err, os.ErrDeadlineExceeded) { // timeout, read no data
+			err = nil
+		}
 		if err != nil {
 			continue
 		}
