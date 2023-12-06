@@ -19,7 +19,6 @@ package internal
 
 import (
 	"context"
-	"github.com/apache/rocketmq-client-go/v2/errors"
 	"math/rand"
 	"sort"
 	"strconv"
@@ -27,6 +26,8 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/apache/rocketmq-client-go/v2/errors"
 
 	jsoniter "github.com/json-iterator/go"
 	"github.com/tidwall/gjson"
@@ -393,7 +394,7 @@ func (s *namesrvs) queryTopicRouteInfoFromServer(topic string) (*TopicRouteData,
 		err      error
 	)
 
-	//if s.Size() == 0, response will be nil, lead to panic below.
+	// if s.Size() == 0, response will be nil, lead to panic below.
 	if s.Size() == 0 {
 		rlog.Error("namesrv list empty. UpdateNameServerAddress should be called first.", map[string]interface{}{
 			"namesrv": s,
@@ -407,10 +408,18 @@ func (s *namesrvs) queryTopicRouteInfoFromServer(topic string) (*TopicRouteData,
 		ctx, cancel := context.WithTimeout(context.Background(), requestTimeout)
 		addr := s.getNameServerAddress()
 		response, err = s.nameSrvClient.InvokeSync(ctx, addr, rc)
+		rlog.Debug("connect to namesrv addr", map[string]interface{}{
+			"namesrv": s,
+			"addr":    addr,
+			"topic":   topic,
+			"err":     err,
+		})
 		if err != nil {
 			rlog.Warning("connect to namesrv addr failed.", map[string]interface{}{
-				"addr":  addr,
-				"topic": topic,
+				"namesrv": s,
+				"addr":    addr,
+				"topic":   topic,
+				"err":     err,
 			})
 		}
 		if err == nil {
