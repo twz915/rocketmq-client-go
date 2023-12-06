@@ -179,11 +179,9 @@ func (c *remotingClient) receiveResponse(r *tcpConnWrapper) {
 			if r.isClosed(err) {
 				return
 			}
-			if err != io.EOF {
-				rlog.Error("conn error, close connection", map[string]interface{}{
-					rlog.LogKeyUnderlayError: err,
-				})
-			}
+			rlog.Error("conn error, close connection", map[string]interface{}{
+				rlog.LogKeyUnderlayError: err,
+			})
 			c.closeConnection(r)
 			r.destroy()
 			break

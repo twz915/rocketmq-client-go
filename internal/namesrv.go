@@ -86,7 +86,7 @@ type namesrvs struct {
 	// lock for broker version read/write
 	brokerLock *sync.RWMutex
 
-	//subscribeInfoMap sync.Map
+	// subscribeInfoMap sync.Map
 	routeDataMap sync.Map
 
 	lockNamesrv sync.Mutex
@@ -162,7 +162,7 @@ func (s *namesrvs) AddrList() []string {
 }
 
 // UpdateNameServerAddress will update srvs.
-// docs: https://rocketmq.apache.org/docs/best-practice-namesvr/
+// docs: https://rocketmq.apache.org/docs/4.x/bestPractice/01bestpractice/#client-configuration
 func (s *namesrvs) UpdateNameServerAddress() {
 	s.lock.Lock()
 	defer s.lock.Unlock()
