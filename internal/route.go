@@ -405,8 +405,14 @@ func (s *namesrvs) queryTopicRouteInfoFromServer(topic string) (*TopicRouteData,
 	for i := 0; i < s.Size(); i++ {
 		rc := remote.NewRemotingCommand(ReqGetRouteInfoByTopic, request, nil)
 		ctx, cancel := context.WithTimeout(context.Background(), requestTimeout)
-		response, err = s.nameSrvClient.InvokeSync(ctx, s.getNameServerAddress(), rc)
-
+		addr := s.getNameServerAddress()
+		response, err = s.nameSrvClient.InvokeSync(ctx, addr, rc)
+		if err != nil {
+			rlog.Warning("connect to namesrv addr failed.", map[string]interface{}{
+				"addr":  addr,
+				"topic": topic,
+			})
+		}
 		if err == nil {
 			cancel()
 			break
